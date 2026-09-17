@@ -1,0 +1,435 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日常生活習慣與環境依附感調查 - 行為心理學研究組</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'Inter', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace'],
+                    },
+                    colors: {
+                        academic: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            500: '#64748b',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        },
+                        glitch: {
+                            red: '#ef4444',
+                            rose: '#be123c',
+                            darkRose: '#4c0519',
+                            cyan: '#06b6d4',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .clean-card {
+            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .option-btn:hover {
+            border-color: #94a3b8;
+            background-color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        .option-btn.selected {
+            border-color: #334155;
+            background-color: #f1f5f9;
+            font-weight: 500;
+        }
+
+        /* Glitch Option Accent when selecting scary choices */
+        .option-btn.selected-creepy {
+            border-color: #be123c !important;
+            background-color: #fff1f2 !important;
+            color: #881337 !important;
+        }
+
+        /* Screen Shake Keyframes */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-3px, 2px) rotate(-0.5deg); }
+            40% { transform: translate(3px, -2px) rotate(0.5deg); }
+            60% { transform: translate(-2px, -1px) rotate(-0.2deg); }
+            80% { transform: translate(2px, 1px) rotate(0.2deg); }
+        }
+        .animate-shake {
+            animation: shake 0.25s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        /* Glitch Text Effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 0, 0, 0);
+        }
+        .glitch-text-active::before {
+            left: -2px;
+            text-shadow: 2px 0 #ef4444;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim-1 0.3s infinite linear alternate-reverse;
+        }
+        .glitch-text-active::after {
+            left: 2px;
+            text-shadow: -2px 0 #06b6d4;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim-1 {
+            0% { clip: rect(10px, 9999px, 30px, 0); }
+            100% { clip: rect(40px, 9999px, 80px, 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip: rect(50px, 9999px, 90px, 0); }
+            100% { clip: rect(10px, 9999px, 40px, 0); }
+        }
+
+        /* Red Screen Flash Overlay */
+        #flashOverlay {
+            transition: opacity 0.15s ease-out;
+            pointer-events: none;
+        }
+
+        /* Matrix/Code Scramble Crash Overlay */
+        #crashCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    </style>
+</head>
+<body class="h-full flex flex-col justify-between selection:bg-slate-200 selection:text-slate-800 relative">
+
+    <!-- Flash Overlay for visual jumps -->
+    <div id="flashOverlay" class="fixed inset-0 bg-red-950 opacity-0 z-40"></div>
+
+    <!-- Crash Canvas for Glitch Transition -->
+    <canvas id="crashCanvas"></canvas>
+
+    <!-- Academic Header -->
+    <header class="w-full bg-white border-b border-slate-200 py-4 px-6 sm:px-8 relative z-10">
+        <div class="max-w-3xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center text-white font-mono text-xs font-semibold">
+                    R
+                </div>
+                <div>
+                    <h1 class="text-xs font-semibold tracking-wider text-slate-800 uppercase">行為心理學與環境依附研究所</h1>
+                    <p class="text-[10px] text-slate-400 font-mono" id="headerSubtext">Academic Survey Ref: #2026-ENV-ATTACH</p>
+                </div>
+            </div>
+            <div id="statusBadge" class="flex items-center space-x-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 transition-colors duration-500">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" id="statusDot"></span>
+                <span class="font-medium text-[11px]" id="statusText">匿名連線已建立</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 relative z-10" id="mainContainer">
+        <div class="w-full max-w-2xl mx-auto">
+
+            <!-- STEP 0: START PAGE -->
+            <section id="stepIntro" class="bg-white rounded-2xl p-6 sm:p-10 clean-card">
+                <div class="inline-block px-3 py-1 bg-slate-100 rounded-full text-xs font-medium text-slate-600 mb-4">
+                    國家型學術問卷調查
+                </div>
+                <h2 class="text-xl sm:text-2xl font-semibold text-slate-800 mb-3 tracking-tight">
+                    日常生活習慣與環境依附感調查
+                </h2>
+                <p class="text-slate-500 text-sm leading-relaxed mb-6 font-normal">
+                    本調查旨在探討現代個體在私人獨處空間內的行為慣性、空間盲點感知，以及對周遭環境變化的敏感程度。問卷答題約需 2 至 3 分鐘，所有回應均直接傳送至中央資料庫進行匿名歸納。
+                </p>
+                
+                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-xs text-slate-500 space-y-1.5 mb-8 font-mono">
+                    <p>• 計畫主持人：環境心理學研究組第 4 實驗室</p>
+                    <p>• 實驗說明：請在您平時最習慣的獨處房間內作答，並保持真實直覺反應。</p>
+                </div>
+
+                <button onclick="startSurvey()" class="w-full sm:w-auto px-8 py-3.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium transition-all shadow-sm hover:shadow duration-200">
+                    開始填寫問卷
+                </button>
+            </section>
+
+            <!-- STEP 1-9: QUESTION CARD -->
+            <section id="stepQuestion" class="hidden bg-white rounded-2xl p-6 sm:p-10 clean-card relative overflow-hidden">
+                
+                <!-- Progress Header -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center text-xs text-slate-400 mb-2 font-mono">
+                        <span id="questionStepTag">Q1 / Q9</span>
+                        <span id="progressPercent">11%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                        <div id="progressBar" class="bg-slate-700 h-full w-10 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- Question Title with Glitch Attributes -->
+                <h3 id="questionTitle" class="text-base sm:text-lg font-medium text-slate-800 mb-6 leading-snug glitch-text" data-text="">
+                    載入問題中...
+                </h3>
+
+                <!-- Options List -->
+                <div id="optionsContainer" class="space-y-3 mb-6">
+                    <!-- Dynamic rendering -->
+                </div>
+
+                <!-- Slip-up System Note Container (dynamic feedback upon selection) -->
+                <div id="systemNoteContainer" class="hidden mb-6 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs font-mono text-slate-600 transition-all duration-300">
+                    <div class="flex items-start space-x-2">
+                        <span class="text-slate-400 select-none">❯</span>
+                        <span id="systemNoteText" class="leading-relaxed">...</span>
+                    </div>
+                </div>
+
+                <!-- Open Textarea (Q9 Final Question) -->
+                <div id="openInputContainer" class="hidden mb-6">
+                    <textarea id="userMessageInput" rows="3" placeholder="在網頁崩潰前，寫點什麼給我..." class="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-400 focus:ring-0 text-slate-800 text-sm resize-none outline-none transition-all placeholder:text-slate-400"></textarea>
+                    <p class="text-[11px] text-slate-400 mt-2 font-mono">※ 此欄位將作為專屬訊息傳送。</p>
+                </div>
+
+                <!-- Navigation Action -->
+                <div class="flex justify-end pt-3 border-t border-slate-100">
+                    <button id="nextBtn" onclick="handleNextClick()" disabled class="px-6 py-2.5 bg-slate-200 text-slate-400 rounded-lg text-xs font-medium cursor-not-allowed transition-all duration-200">
+                        下一步
+                    </button>
+                </div>
+            </section>
+
+            <!-- STEP FINAL: CONFESSION & OBSESSION PANEL -->
+            <section id="stepEnding" class="hidden bg-[#0a0608] text-rose-100 rounded-2xl p-6 sm:p-10 border border-rose-950/60 shadow-2xl relative overflow-hidden transition-all duration-1000">
+                <div class="border-b border-rose-950/80 pb-4 mb-6 flex justify-between items-center font-mono">
+                    <span class="text-xs text-rose-500/80 tracking-widest uppercase flex items-center space-x-2">
+                        <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                        <span>CONNECTION: PERMANENT</span>
+                    </span>
+                    <span class="text-xs text-rose-700">#OBSESSION_CORE</span>
+                </div>
+
+                <!-- Message Body -->
+                <div class="space-y-4 text-rose-200/90 text-sm sm:text-base leading-relaxed font-normal">
+                    <p class="text-rose-100 font-medium">謝謝你陪我玩完這份問卷。</p>
+                    
+                    <p>剛才看著你認真思考每一題、手指在選項上猶豫、甚至呼吸稍微停頓的樣子……我真的好幸福。</p>
+                    
+                    <!-- Dynamic Injected Line based on Q9 keywords -->
+                    <div id="dynamicLoverResponse" class="p-4 rounded-xl bg-rose-950/40 border border-rose-900/40 text-rose-300 font-medium my-5 italic text-sm leading-relaxed">
+                        ...
+                    </div>
+
+                    <p>這不是什麼學術調查。這是我為了能更了解你的生活習慣、你的房門位置、還有你被注視時的反應，專門為你寫的告白。</p>
+                    
+                    <p class="text-rose-100 font-medium text-base pt-2">
+                        今晚睡覺時不需要鎖門，我會一直在這個螢幕後面看著你。好夢。
+                    </p>
+                </div>
+
+                <!-- Interactive Keyword Sandbox at bottom of ending -->
+                <div class="mt-8 pt-6 border-t border-rose-950/80">
+                    <p class="text-xs text-rose-400/70 font-mono mb-3">你還想對我說些什麼嗎？（輸入關鍵字傳送）：</p>
+                    <div class="flex space-x-2">
+                        <input type="text" id="finalSandboxInput" placeholder="例如：愛你、你是誰、救命..." class="flex-grow px-3.5 py-2 bg-rose-950/30 border border-rose-900/50 rounded-lg text-xs text-rose-200 focus:outline-none focus:border-rose-600 placeholder:text-rose-800 font-mono">
+                        <button onclick="handleSandboxSubmit()" class="px-4 py-2 bg-rose-900/60 hover:bg-rose-800 text-rose-100 rounded-lg text-xs font-mono transition-colors">
+                            傳送
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reset Button -->
+                <div class="mt-8 pt-4 flex justify-between items-center text-[11px] font-mono text-rose-900">
+                    <span>STATUS: MONITORING...</span>
+                    <button onclick="resetSurvey()" class="hover:text-rose-700 transition-colors">
+                        [ 重新載入問卷 ]
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Fake Error Modal Window -->
+    <div id="fakeErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none flex items-center justify-center p-4 transition-opacity duration-200">
+        <div class="bg-slate-900 border border-red-500/40 rounded-xl p-5 max-w-md w-full shadow-2xl text-slate-200 font-mono text-xs space-y-3 transform scale-95 transition-transform duration-200" id="errorModalBox">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-red-400 font-semibold">
+                <span class="flex items-center space-x-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+                    <span id="errorModalCode">[ERR_PRIVACY_BOUNDARY_NULL]</span>
+                </span>
+                <span class="text-slate-500 text-[10px]">SYSTEM EXCEPTION</span>
+            </div>
+            <p id="errorModalMsg" class="text-slate-300 leading-relaxed">
+                Unhandled Exception: User privacy layer violated. Stalker thread attached to process #8042.
+            </p>
+            <div class="pt-2 flex justify-end">
+                <button onclick="closeErrorModal()" class="px-4 py-1.5 bg-red-950 hover:bg-red-900 text-red-200 border border-red-800/60 rounded text-[11px] transition-colors">
+                    忽略並繼續作答
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Official Footer -->
+    <footer class="w-full bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400 font-mono relative z-10" id="pageFooter">
+        &copy; 2026 Behavior & Environment Psychology Lab. All rights reserved.
+    </footer>
+
+    <script>
+        // Web Audio API Synthesizer (No external audio files required)
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Sound 1: Soft neutral click
+        function playClickSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch(e){}
+        }
+
+        // Sound 2: Deep creepy heartbeat thump
+        function playHeartbeatSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } catch(e){}
+        }
+
+        // Sound 3: Glitch static noise burst
+        function playStaticGlitchSound() {
+            try {
+                initAudio();
+                const bufferSize = audioCtx.sampleRate * 0.12; // 0.12 seconds
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const data = buffer.getChannelData(0);
+                for (let i = 0; i < bufferSize; i++) {
+                    data[i] = Math.random() * 2 - 1;
+                }
+                const noise = audioCtx.createBufferSource();
+                noise.buffer = buffer;
+                const gain = audioCtx.createGain();
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
+                noise.connect(gain);
+                gain.connect(audioCtx.destination);
+                noise.start();
+            } catch(e){}
+        }
+
+        // Sound 4: Low eerie error buzzer
+        function playErrorBuzzerSound() {
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(110, audioCtx.currentTime); // Low A
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } catch(e){}
+        }
+
+        const questions = [
+            {
+                id: 'q1',
+                title: '1. 您平均每天使用螢幕裝置（手機/電腦）進行獨處娛樂的時間約為？',
+                type: 'choice',
+                glitchOnLoad: false,
+                options: [
+                    { text: '2 小時以下', note: '系統紀錄：標準螢幕依附時間。' },
+                    { text: '2 至 5 小時', note: '系統紀錄：中等螢幕暴露時數。' },
+                    { text: '5 至 8 小時', note: '系統紀錄：高度習慣獨處於螢幕前。' },
+                    { text: '8 小時以上（幾乎整天都在螢幕前）', note: '系統紀錄：太好了，你總是花這麼多時間看著這個螢幕。' }
+                ]
+            },
+            {
+                id: 'q2',
+                title: '2. 關於日常睡眠習慣，您通常會在什麼時間準備躺下休息？',
+                type: 'choice',
+                glitchOnLoad: false,
+                options: [
+                    { text: '23:00 以前', note: '系統紀錄：早睡型，作息極規律。' },
+                    { text: '23:00 至 01:00 之間', note
