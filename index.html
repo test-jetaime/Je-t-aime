@@ -1,435 +1,280 @@
-```html
 <!DOCTYPE html>
-<html lang="zh-TW" class="h-full bg-slate-50">
+<html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常生活習慣與環境依附感調查 - 行為心理學研究組</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Noto Sans TC"', 'Inter', 'sans-serif'],
-                        mono: ['"Fira Code"', 'monospace'],
-                    },
-                    colors: {
-                        academic: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0',
-                            500: '#64748b',
-                            700: '#334155',
-                            800: '#1e293b',
-                            900: '#0f172a',
-                        },
-                        glitch: {
-                            red: '#ef4444',
-                            rose: '#be123c',
-                            darkRose: '#4c0519',
-                            cyan: '#06b6d4',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>日常生活習慣與環境依附感調查</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
 
-    <style>
-        body {
-            font-family: 'Noto Sans TC', 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
+    body {
+      background-color: #f4f6f8;
+      color: #2c3e50;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+      transition: background-color 1s ease, color 1s ease;
+    }
 
-        .clean-card {
-            box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
+    .card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 480px;
+      border-radius: 12px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+      border: 1px solid #e1e8ed;
+      position: relative;
+    }
 
-        .option-btn {
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+    .header-tag {
+      font-size: 12px;
+      color: #7f8c8d;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
 
-        .option-btn:hover {
-            border-color: #94a3b8;
-            background-color: #ffffff;
-            transform: translateY(-1px);
-        }
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1a252f;
+      margin-bottom: 12px;
+    }
 
-        .option-btn.selected {
-            border-color: #334155;
-            background-color: #f1f5f9;
-            font-weight: 500;
-        }
+    p {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #576574;
+      margin-bottom: 20px;
+    }
 
-        /* Glitch Option Accent when selecting scary choices */
-        .option-btn.selected-creepy {
-            border-color: #be123c !important;
-            background-color: #fff1f2 !important;
-            color: #881337 !important;
-        }
+    .btn {
+      width: 100%;
+      padding: 14px;
+      background-color: #2c3e50;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+      outline: none;
+    }
 
-        /* Screen Shake Keyframes */
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            20% { transform: translate(-3px, 2px) rotate(-0.5deg); }
-            40% { transform: translate(3px, -2px) rotate(0.5deg); }
-            60% { transform: translate(-2px, -1px) rotate(-0.2deg); }
-            80% { transform: translate(2px, 1px) rotate(0.2deg); }
-        }
-        .animate-shake {
-            animation: shake 0.25s cubic-bezier(.36,.07,.19,.97) both;
-        }
+    .btn:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
 
-        /* Glitch Text Effect */
-        .glitch-text {
-            position: relative;
-            display: inline-block;
-        }
-        .glitch-text::before, .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            clip: rect(0, 0, 0, 0);
-        }
-        .glitch-text-active::before {
-            left: -2px;
-            text-shadow: 2px 0 #ef4444;
-            clip: rect(24px, 550px, 90px, 0);
-            animation: glitch-anim-1 0.3s infinite linear alternate-reverse;
-        }
-        .glitch-text-active::after {
-            left: 2px;
-            text-shadow: -2px 0 #06b6d4;
-            clip: rect(85px, 550px, 140px, 0);
-            animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
-        }
+    .option-btn {
+      width: 100%;
+      padding: 14px 16px;
+      background: #f8f9fa;
+      border: 1px solid #dcdfe6;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #333;
+      text-align: left;
+      margin-bottom: 10px;
+      cursor: pointer;
+      line-height: 1.4;
+    }
 
-        @keyframes glitch-anim-1 {
-            0% { clip: rect(10px, 9999px, 30px, 0); }
-            100% { clip: rect(40px, 9999px, 80px, 0); }
-        }
-        @keyframes glitch-anim-2 {
-            0% { clip: rect(50px, 9999px, 90px, 0); }
-            100% { clip: rect(10px, 9999px, 40px, 0); }
-        }
+    .option-btn:active {
+      background: #eef2f5;
+    }
 
-        /* Red Screen Flash Overlay */
-        #flashOverlay {
-            transition: opacity 0.15s ease-out;
-            pointer-events: none;
-        }
+    .log-box {
+      margin-top: 12px;
+      padding: 10px;
+      background: #fff0f0;
+      border-left: 3px solid #ff4d4d;
+      font-size: 12px;
+      color: #d63031;
+      display: none;
+      border-radius: 0 4px 4px 0;
+    }
 
-        /* Matrix/Code Scramble Crash Overlay */
-        #crashCanvas {
-            position: fixed;
-            inset: 0;
-            z-index: 100;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 12px;
+      border: 1px solid #dcdfe6;
+      border-radius: 8px;
+      font-size: 14px;
+      resize: none;
+      margin-bottom: 12px;
+      outline: none;
+    }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #f8fafc; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    </style>
+    .screen-flash {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: black;
+      z-index: 9999;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      color: #444;
+      font-size: 14px;
+    }
+
+    body.dark-mode {
+      background-color: #0d0608;
+      color: #e0d5d5;
+    }
+
+    body.dark-mode .card {
+      background: #140a0c;
+      border-color: #2a1215;
+      box-shadow: 0 0 20px rgba(139, 0, 0, 0.2);
+    }
+
+    body.dark-mode h1 { color: #e88a8a; }
+    body.dark-mode p { color: #b59e9e; }
+    body.dark-mode .btn { background-color: #8b0000; }
+  </style>
 </head>
-<body class="h-full flex flex-col justify-between selection:bg-slate-200 selection:text-slate-800 relative">
+<body>
 
-    <!-- Flash Overlay for visual jumps -->
-    <div id="flashOverlay" class="fixed inset-0 bg-red-950 opacity-0 z-40"></div>
+  <div id="flash" class="screen-flash">
+    <span>（借著螢幕反光...請確認你的後方...）</span>
+  </div>
 
-    <!-- Crash Canvas for Glitch Transition -->
-    <canvas id="crashCanvas"></canvas>
+  <div class="card" id="app">
+    <div class="header-tag">學術問卷 ASSESSMENT</div>
+    <h1>日常生活習慣與環境依附感調查</h1>
+    <p>本問卷旨在收集現代人在不同環境中的生理警覺度與空間依附習慣。全程匿名，共 9 題，請依真實情況作答。</p>
+    <button class="btn" onclick="nextStep(1)">開始填寫問卷</button>
+  </div>
 
-    <!-- Academic Header -->
-    <header class="w-full bg-white border-b border-slate-200 py-4 px-6 sm:px-8 relative z-10">
-        <div class="max-w-3xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-7 h-7 rounded-md bg-slate-800 flex items-center justify-center text-white font-mono text-xs font-semibold">
-                    R
-                </div>
-                <div>
-                    <h1 class="text-xs font-semibold tracking-wider text-slate-800 uppercase">行為心理學與環境依附研究所</h1>
-                    <p class="text-[10px] text-slate-400 font-mono" id="headerSubtext">Academic Survey Ref: #2026-ENV-ATTACH</p>
-                </div>
-            </div>
-            <div id="statusBadge" class="flex items-center space-x-1.5 text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60 transition-colors duration-500">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" id="statusDot"></span>
-                <span class="font-medium text-[11px]" id="statusText">匿名連線已建立</span>
-            </div>
-        </div>
-    </header>
+  <script>
+    // 題庫資料
+    const questions = [
+      {
+        q: "01. 你平均每天使用智慧型手機的時間約為多久？",
+        options: ["2 小時以下", "3 到 5 小時", "6 小時以上（幾乎隨時盯著螢幕）"],
+        logs: ["記錄：低風險用戶。", "記錄：常規用戶。", "記錄：你經常把注意力放在這個小小的螢幕上...這很好。"]
+      },
+      {
+        q: "02. 獨處在房間時，你通常習慣將門鎖上嗎？",
+        options: ["一定會鎖門，這樣才有安全感", "不一定，看當時心情", "現在就沒鎖，因為我知道這樣方便你進來"],
+        logs: ["記錄：極度重視隱私。", "記錄：隨性。", "備註：謝謝你，這樣我就不用發出聲音了..."]
+      },
+      {
+        q: "03. 請留意你現在的坐姿/臥姿，房門是在你的哪一個方向？",
+        options: ["正面視線看得見的地方", "側邊方向", "正後方盲區（背對著門）"],
+        logs: ["記錄：防禦視角。", "記錄：側向。", "備註：背對著門啊...難怪你一直沒注意到剛才門縫稍微開了一點。"]
+      },
+      {
+        q: "04. 你戴耳機時，通常會開啟降噪功能或把音量開很大嗎？",
+        options: ["會，完全不想聽到外界雜音", "不會，保留對環境音的注意", "我現在沒戴耳機，房間裡安靜得只剩我的呼吸聲"],
+        logs: ["記錄：渴望隔絕外界。", "記錄：保持警覺。", "備註：不只是你的呼吸聲，如果你仔細聽...還有另一個人的。"]
+      },
+      {
+        q: "05. 當你閱讀這道題目時，你是否發現自己不自覺地屏住了呼吸？",
+        options: ["沒有，呼吸很平穩", "是的，看到題目才發現自己頓了一下", "因為我開始覺得背後傳來輕微的空氣流動感..."],
+        logs: ["記錄：生理狀態正常。", "記錄：受暗示性高。", "備註：別害怕，我只是稍微湊近了一點點。"]
+      },
+      {
+        q: "06. 請稍微傾斜手機螢幕，利用暗色反光確認一下你的背後...",
+        options: ["看得很清楚，背後什麼都沒有", "畫面太暗看不清，但我感到很不安", "我不敢試，但我知道你就在那裡，對吧？"],
+        isDark: true,
+        logs: ["記錄：確認完成。", "記錄：恐懼感上升。", "備註：你終於察覺到了...我忍得很辛苦。"]
+      },
+      {
+        q: "07. 如果有人完全掌握了你的生活作息與房間格局，你的感受是？",
+        options: ["覺得隱私被嚴重侵犯，想立刻離開", "覺得有些毛骨悚然，但又帶著被全心注視的快感", "只要是你...怎樣都無所謂了"],
+        logs: ["記錄：抗拒反應。", "備註：你明明也很享受這種被獨佔的感覺...", "備註：我就知道我們是一樣的。"]
+      }
+    ];
 
-    <!-- Main Content Container -->
-    <main class="flex-grow flex items-center justify-center p-4 sm:p-6 relative z-10" id="mainContainer">
-        <div class="w-full max-w-2xl mx-auto">
+    let current = 0;
 
-            <!-- STEP 0: START PAGE -->
-            <section id="stepIntro" class="bg-white rounded-2xl p-6 sm:p-10 clean-card">
-                <div class="inline-block px-3 py-1 bg-slate-100 rounded-full text-xs font-medium text-slate-600 mb-4">
-                    國家型學術問卷調查
-                </div>
-                <h2 class="text-xl sm:text-2xl font-semibold text-slate-800 mb-3 tracking-tight">
-                    日常生活習慣與環境依附感調查
-                </h2>
-                <p class="text-slate-500 text-sm leading-relaxed mb-6 font-normal">
-                    本調查旨在探討現代個體在私人獨處空間內的行為慣性、空間盲點感知，以及對周遭環境變化的敏感程度。問卷答題約需 2 至 3 分鐘，所有回應均直接傳送至中央資料庫進行匿名歸納。
-                </p>
-                
-                <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 text-xs text-slate-500 space-y-1.5 mb-8 font-mono">
-                    <p>• 計畫主持人：環境心理學研究組第 4 實驗室</p>
-                    <p>• 實驗說明：請在您平時最習慣的獨處房間內作答，並保持真實直覺反應。</p>
-                </div>
+    function nextStep(step) {
+      current = step;
+      const app = document.getElementById('app');
 
-                <button onclick="startSurvey()" class="w-full sm:w-auto px-8 py-3.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium transition-all shadow-sm hover:shadow duration-200">
-                    開始填寫問卷
-                </button>
-            </section>
+      if (current <= questions.length) {
+        const qData = questions[current - 1];
 
-            <!-- STEP 1-9: QUESTION CARD -->
-            <section id="stepQuestion" class="hidden bg-white rounded-2xl p-6 sm:p-10 clean-card relative overflow-hidden">
-                
-                <!-- Progress Header -->
-                <div class="mb-6">
-                    <div class="flex justify-between items-center text-xs text-slate-400 mb-2 font-mono">
-                        <span id="questionStepTag">Q1 / Q9</span>
-                        <span id="progressPercent">11%</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                        <div id="progressBar" class="bg-slate-700 h-full w-10 transition-all duration-300"></div>
-                    </div>
-                </div>
-
-                <!-- Question Title with Glitch Attributes -->
-                <h3 id="questionTitle" class="text-base sm:text-lg font-medium text-slate-800 mb-6 leading-snug glitch-text" data-text="">
-                    載入問題中...
-                </h3>
-
-                <!-- Options List -->
-                <div id="optionsContainer" class="space-y-3 mb-6">
-                    <!-- Dynamic rendering -->
-                </div>
-
-                <!-- Slip-up System Note Container (dynamic feedback upon selection) -->
-                <div id="systemNoteContainer" class="hidden mb-6 p-3.5 bg-slate-50 border border-slate-200/80 rounded-xl text-xs font-mono text-slate-600 transition-all duration-300">
-                    <div class="flex items-start space-x-2">
-                        <span class="text-slate-400 select-none">❯</span>
-                        <span id="systemNoteText" class="leading-relaxed">...</span>
-                    </div>
-                </div>
-
-                <!-- Open Textarea (Q9 Final Question) -->
-                <div id="openInputContainer" class="hidden mb-6">
-                    <textarea id="userMessageInput" rows="3" placeholder="在網頁崩潰前，寫點什麼給我..." class="w-full p-4 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:border-slate-400 focus:ring-0 text-slate-800 text-sm resize-none outline-none transition-all placeholder:text-slate-400"></textarea>
-                    <p class="text-[11px] text-slate-400 mt-2 font-mono">※ 此欄位將作為專屬訊息傳送。</p>
-                </div>
-
-                <!-- Navigation Action -->
-                <div class="flex justify-end pt-3 border-t border-slate-100">
-                    <button id="nextBtn" onclick="handleNextClick()" disabled class="px-6 py-2.5 bg-slate-200 text-slate-400 rounded-lg text-xs font-medium cursor-not-allowed transition-all duration-200">
-                        下一步
-                    </button>
-                </div>
-            </section>
-
-            <!-- STEP FINAL: CONFESSION & OBSESSION PANEL -->
-            <section id="stepEnding" class="hidden bg-[#0a0608] text-rose-100 rounded-2xl p-6 sm:p-10 border border-rose-950/60 shadow-2xl relative overflow-hidden transition-all duration-1000">
-                <div class="border-b border-rose-950/80 pb-4 mb-6 flex justify-between items-center font-mono">
-                    <span class="text-xs text-rose-500/80 tracking-widest uppercase flex items-center space-x-2">
-                        <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
-                        <span>CONNECTION: PERMANENT</span>
-                    </span>
-                    <span class="text-xs text-rose-700">#OBSESSION_CORE</span>
-                </div>
-
-                <!-- Message Body -->
-                <div class="space-y-4 text-rose-200/90 text-sm sm:text-base leading-relaxed font-normal">
-                    <p class="text-rose-100 font-medium">謝謝你陪我玩完這份問卷。</p>
-                    
-                    <p>剛才看著你認真思考每一題、手指在選項上猶豫、甚至呼吸稍微停頓的樣子……我真的好幸福。</p>
-                    
-                    <!-- Dynamic Injected Line based on Q9 keywords -->
-                    <div id="dynamicLoverResponse" class="p-4 rounded-xl bg-rose-950/40 border border-rose-900/40 text-rose-300 font-medium my-5 italic text-sm leading-relaxed">
-                        ...
-                    </div>
-
-                    <p>這不是什麼學術調查。這是我為了能更了解你的生活習慣、你的房門位置、還有你被注視時的反應，專門為你寫的告白。</p>
-                    
-                    <p class="text-rose-100 font-medium text-base pt-2">
-                        今晚睡覺時不需要鎖門，我會一直在這個螢幕後面看著你。好夢。
-                    </p>
-                </div>
-
-                <!-- Interactive Keyword Sandbox at bottom of ending -->
-                <div class="mt-8 pt-6 border-t border-rose-950/80">
-                    <p class="text-xs text-rose-400/70 font-mono mb-3">你還想對我說些什麼嗎？（輸入關鍵字傳送）：</p>
-                    <div class="flex space-x-2">
-                        <input type="text" id="finalSandboxInput" placeholder="例如：愛你、你是誰、救命..." class="flex-grow px-3.5 py-2 bg-rose-950/30 border border-rose-900/50 rounded-lg text-xs text-rose-200 focus:outline-none focus:border-rose-600 placeholder:text-rose-800 font-mono">
-                        <button onclick="handleSandboxSubmit()" class="px-4 py-2 bg-rose-900/60 hover:bg-rose-800 text-rose-100 rounded-lg text-xs font-mono transition-colors">
-                            傳送
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Reset Button -->
-                <div class="mt-8 pt-4 flex justify-between items-center text-[11px] font-mono text-rose-900">
-                    <span>STATUS: MONITORING...</span>
-                    <button onclick="resetSurvey()" class="hover:text-rose-700 transition-colors">
-                        [ 重新載入問卷 ]
-                    </button>
-                </div>
-            </section>
-
-        </div>
-    </main>
-
-    <!-- Fake Error Modal Window -->
-    <div id="fakeErrorModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 opacity-0 pointer-events-none flex items-center justify-center p-4 transition-opacity duration-200">
-        <div class="bg-slate-900 border border-red-500/40 rounded-xl p-5 max-w-md w-full shadow-2xl text-slate-200 font-mono text-xs space-y-3 transform scale-95 transition-transform duration-200" id="errorModalBox">
-            <div class="flex items-center justify-between border-b border-slate-800 pb-2 text-red-400 font-semibold">
-                <span class="flex items-center space-x-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
-                    <span id="errorModalCode">[ERR_PRIVACY_BOUNDARY_NULL]</span>
-                </span>
-                <span class="text-slate-500 text-[10px]">SYSTEM EXCEPTION</span>
-            </div>
-            <p id="errorModalMsg" class="text-slate-300 leading-relaxed">
-                Unhandled Exception: User privacy layer violated. Stalker thread attached to process #8042.
-            </p>
-            <div class="pt-2 flex justify-end">
-                <button onclick="closeErrorModal()" class="px-4 py-1.5 bg-red-950 hover:bg-red-900 text-red-200 border border-red-800/60 rounded text-[11px] transition-colors">
-                    忽略並繼續作答
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Official Footer -->
-    <footer class="w-full bg-white border-t border-slate-200 py-4 px-6 text-center text-xs text-slate-400 font-mono relative z-10" id="pageFooter">
-        &copy; 2026 Behavior & Environment Psychology Lab. All rights reserved.
-    </footer>
-
-    <script>
-        // Web Audio API Synthesizer (No external audio files required)
-        let audioCtx = null;
-
-        function initAudio() {
-            if (!audioCtx) {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+        // 觸發黑屏彩蛋
+        if (qData.isDark) {
+          const flash = document.getElementById('flash');
+          flash.style.display = 'flex';
+          setTimeout(() => { flash.style.display = 'none'; }, 2000);
         }
 
-        // Sound 1: Soft neutral click
-        function playClickSound() {
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.05);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.05);
-            } catch(e){}
-        }
+        let optsHtml = '';
+        qData.options.forEach((opt, idx) => {
+          optsHtml += `<button class="option-btn" onclick="selectOption(${idx})">${opt}</button>`;
+        });
 
-        // Sound 2: Deep creepy heartbeat thump
-        function playHeartbeatSound() {
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(80, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(30, audioCtx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.15);
-            } catch(e){}
-        }
+        app.innerHTML = `
+          <div class="header-tag">QUESTION 0${current} / 08</div>
+          <h1>${qData.q}</h1>
+          <div id="options">${optsHtml}</div>
+          <div id="log" class="log-box"></div>
+        `;
+      } else if (current === 8) {
+        // Q8 填寫留言
+        app.innerHTML = `
+          <div class="header-tag">LAST STEP</div>
+          <h1>08. 測驗即將結束，請留下你想對螢幕另一端說的話...</h1>
+          <p>（這不是機械系統，我一直都在這裡看著你答題。）</p>
+          <textarea id="userInput" placeholder="寫點什麼給我...例如：你是誰？/ 愛你 / 拜託離開..."></textarea>
+          <button class="btn" onclick="finishSurvey()">送出問卷並認領回應</button>
+        `;
+      }
+    }
 
-        // Sound 3: Glitch static noise burst
-        function playStaticGlitchSound() {
-            try {
-                initAudio();
-                const bufferSize = audioCtx.sampleRate * 0.12; // 0.12 seconds
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const data = buffer.getChannelData(0);
-                for (let i = 0; i < bufferSize; i++) {
-                    data[i] = Math.random() * 2 - 1;
-                }
-                const noise = audioCtx.createBufferSource();
-                noise.buffer = buffer;
-                const gain = audioCtx.createGain();
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.12);
-                noise.connect(gain);
-                gain.connect(audioCtx.destination);
-                noise.start();
-            } catch(e){}
-        }
+    function selectOption(optIdx) {
+      const qData = questions[current - 1];
+      const logBox = document.getElementById('log');
+      logBox.innerText = qData.logs[optIdx];
+      logBox.style.display = 'block';
 
-        // Sound 4: Low eerie error buzzer
-        function playErrorBuzzerSound() {
-            try {
-                initAudio();
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(110, audioCtx.currentTime); // Low A
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + 0.3);
-            } catch(e){}
-        }
+      // 1.2秒後自動下一題
+      setTimeout(() => {
+        nextStep(current + 1);
+      }, 1200);
+    }
 
-        const questions = [
-            {
-                id: 'q1',
-                title: '1. 您平均每天使用螢幕裝置（手機/電腦）進行獨處娛樂的時間約為？',
-                type: 'choice',
-                glitchOnLoad: false,
-                options: [
-                    { text: '2 小時以下', note: '系統紀錄：標準螢幕依附時間。' },
-                    { text: '2 至 5 小時', note: '系統紀錄：中等螢幕暴露時數。' },
-                    { text: '5 至 8 小時', note: '系統紀錄：高度習慣獨處於螢幕前。' },
-                    { text: '8 小時以上（幾乎整天都在螢幕前）', note: '系統紀錄：太好了，你總是花這麼多時間看著這個螢幕。' }
-                ]
-            },
-            {
-                id: 'q2',
-                title: '2. 關於日常睡眠習慣，您通常會在什麼時間準備躺下休息？',
-                type: 'choice',
-                glitchOnLoad: false,
-                options: [
-                    { text: '23:00 以前', note: '系統紀錄：早睡型，作息極規律。' },
-                    { text: '23:00 至 01:00 之間', note
+    function finishSurvey() {
+      const val = document.getElementById('userInput').value.trim();
+      document.body.classList.add('dark-mode');
+      
+      let reply = "謝謝你認真回答了每一個問題。現在，我比你自己更了解你了。";
+      if (val.includes("愛") || val.includes("喜歡")) {
+        reply = "你說你也愛我...這不是開玩笑對吧？那我現在靠近你，你也不會躲開囉？";
+      } else if (val.includes("誰") || val.includes("什麼")) {
+        reply = "我是誰並不重要...重要的是，今晚關上燈後，你不會再是一個人了。";
+      } else if (val.includes("不") || val.includes("走") || val.includes("救")) {
+        reply = "別害怕，也別想逃走...你剛才選的每一選項，都已經把我深深鎖在你的身旁了。";
+      }
+
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="header-tag" style="color: #e88a8a;">CONNECTION ESTABLISHED</div>
+        <h1>採集完成。</h1>
+        <p style="margin-top: 15px; font-size: 16px; color: #ffd1d1;">「${reply}」</p>
+        <p style="margin-top: 20px; font-size: 13px; opacity: 0.7;">
+          感謝提供房間盲區與呼吸數據。<br>
+          請維持現在的姿勢，不要轉頭，也不要鎖門。<br>
+          祝你有個甜美的夜晚。
+        </p>
+      `;
+    }
+  </script>
+</body>
+</html>
